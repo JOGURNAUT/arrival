@@ -118,16 +118,40 @@ class FeatureStore(Protocol):
     def online(self, trip: Trip, as_of: datetime) -> FeatureVector:
         """The same definitions, asked for one entity at one instant."""
 
+    def observe(self, trip: Trip) -> None:
+        """Take a finished trip into the history the online path reads.
+
+        Part of the Protocol because the serving layer must not have to guess
+        what the method is called. A write path discovered by trying several
+        names works until someone renames one, and then predictions quietly
+        stop improving -- the service keeps answering, the features keep
+        resolving, and only the aggregates go stale.
+        """
+
 
 # ------------------------------------------------------------------- models
 
 @dataclass(frozen=True)
 class Prediction:
+    """An answer the service gave, and how it arrived at it.
+
+    `fallback` is part of the contract rather than an implementation detail of
+    the serving layer. A service under load, or asked about a driver it has
+    never seen, still has to answer -- and the honest answer is the flat
+    promise. What must never happen is that answer being indistinguishable from
+    a modelled one: the fallback rate is the single number that separates "the
+    model is live" from "the model has been failing open since Tuesday", and a
+    flag the monitor has to guess at with getattr is a flag that will one day
+    read False for the wrong reason.
+    """
+
     trip_id: str
     minutes: float
     model_version: str
     variant: str = "control"
     served_at: datetime | None = None
+    fallback: bool = False
+    fallback_reason: str = ""
 
 
 class Model(Protocol):
