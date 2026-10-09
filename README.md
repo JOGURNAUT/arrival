@@ -11,15 +11,17 @@ computed when the page is built.
 **[What Dispatch hands Arrival →](https://jogurnaut.github.io/arrival/handoff.html)**
 
 ```
-The leak looks 3.75 minutes better than the honest model.
-The honest model is only 3.07 minutes better than doing nothing.
+A leaked feature window buys 0.92 minutes of MAE that does not exist.
+The honest model is worth 2.83 — and on a quarter of the data,
+the same leak was worth 3.75 while the honest model was worth 3.07.
 ```
 
-That is the finding. A single wrong character in a feature window — filtering on
-when a trip was *assigned* rather than when it *finished* — buys more apparent
-accuracy than the entire real improvement over the business's current flat
-promise. None of it survives production, and nothing about the training run says
-so.
+That is the finding, and the second line is the important half. Filtering a
+feature window on when a trip was *assigned* rather than when it *finished*
+flatters a model — and it flatters it hardest when there is least history to
+learn from, which is exactly when a model is being prototyped and exactly when
+nobody is checking. None of it survives production, and nothing in the training
+run says so.
 
 ## Run it
 
@@ -79,27 +81,47 @@ finished trips pushed in as they complete. One trip agreeing is a coincidence.
 
 ## The leak, measured
 
-Trained on Dispatch's warehouse — 4,809 completed trips, 3,847 train, 962 test:
+Trained on Dispatch's warehouse — 19,312 completed trips, 15,449 train, 3,863
+test, 60 drivers with a median of 320 trips each:
 
 ```
 model                        MAE     p90 error   breach rate
-flat promise               11.509      27.383         0.722
-ridge, point-in-time        8.444      16.553         0.420
-ridge, leaky: in-flight     4.698      11.050         0.498
-ridge, leaky: no window     8.251      16.364         0.433
+flat promise               11.019      25.636         0.719
+ridge, point-in-time        8.190      16.430         0.410
+ridge, leaky: in-flight     7.265      15.806         0.464
+ridge, leaky: no window     8.103      16.345         0.422
 ```
 
-**The honest model takes 3.065 minutes off the flat promise.** That is the
+**The honest model takes 2.830 minutes off the flat promise.** That is the
 improvement that exists.
 
-**The in-flight leak looks 3.746 minutes better again.** Its window filters on
+**The in-flight leak looks 0.924 minutes better again.** Its window filters on
 `assigned_at`, so it reads trips that had not finished when the estimate was due
 — including the trip being predicted, whose own duration enters its own feature.
 
-**The windowless variant is the dangerous one.** It gaps only 0.192 minutes:
-small enough to shrug at, wrong for exactly the same reason, and the shape a
-`GROUP BY` written without a date filter actually takes. A leak that announces
-itself gets caught. This is what the other kind looks like.
+**The windowless variant gaps 0.086 minutes**: small enough to shrug at, wrong
+for exactly the same reason, and the shape a `GROUP BY` written without a date
+filter actually takes. A leak that announces itself gets caught. This is what
+the other kind looks like.
+
+### The leak is largest when the history is thinnest
+
+The same comparison on a quarter of the data — 4,809 trips, about 80 per driver
+rather than 320:
+
+```
+                      4,809 trips      19,312 trips
+honest lift               3.065             2.830
+in-flight leak gap        3.746             0.924
+```
+
+On the smaller set the leak appears to buy *more than the entire real
+improvement*. On the larger one it buys a third of it. Nothing about the leak
+changed; the honest features simply got enough history to be nearly as
+informative, so the stolen information stopped being worth much.
+
+Which is the uncomfortable part. The leak flatters hardest exactly when a
+project is small, new, and least likely to be checked.
 
 ## A model that broke at 09:00
 

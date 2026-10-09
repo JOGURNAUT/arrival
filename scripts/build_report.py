@@ -119,11 +119,25 @@ def render(result, lag, lat, ab) -> str:
              breach {met.breach_rate:.1%} &middot; {met.n:,} trips</div>
       </div>""" for name, met, leak in rows)
 
+    # Both models, side by side. The claim this table makes is that a broken
+    # model reads the same as a healthy one, and a table that shows only the
+    # broken column asks to be believed rather than checked.
+    healthy = {r["clock"]: r for r in lag if not r["broken"]}
+
+    def fmt(v):
+        return "&mdash;" if v is None else f"{v:.3f}"
+
     def lagrow(r: dict) -> str:
-        mae = "&mdash;" if r["mae"] is None else f"{r['mae']:.3f}"
+        h = healthy[r["clock"]]
+        same = (h["mae"] is not None and r["mae"] is not None
+                and abs(h["mae"] - r["mae"]) < 1e-9)
+        verdict = "identical" if same else "diverged"
+        colour = "var(--leak)" if same else "var(--ink3)"
         return (f"<tr><td>{r['clock']}</td>"
                 f"<td class='n'>{r['n']}</td>"
-                f"<td class='n'>{mae}</td>"
+                f"<td class='n'>{fmt(h['mae'])}</td>"
+                f"<td class='n'>{fmt(r['mae'])}</td>"
+                f"<td class='n' style=\"color:{colour}\">{verdict}</td>"
                 f"<td class='n'>{r['pending']}</td></tr>")
 
     lagrows = "\n".join(lagrow(r) for r in lag if r["broken"])
@@ -229,7 +243,8 @@ def render(result, lag, lat, ab) -> str:
      is what the accuracy dashboard showed.</p>
   <table>
     <thead><tr><th>Time</th><th class="n">Trips scored</th>
-      <th class="n">MAE</th><th class="n">Labels pending</th></tr></thead>
+      <th class="n">MAE &mdash; healthy</th><th class="n">MAE &mdash; broken</th>
+      <th class="n">&nbsp;</th><th class="n">Labels pending</th></tr></thead>
     <tbody>{lagrows}</tbody>
   </table>
   <p class="caveat" style="margin-top:14px">Twenty minutes into the outage the

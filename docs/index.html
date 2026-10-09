@@ -65,11 +65,11 @@
 <body><div class="wrap">
 
 <p class="eyebrow">Arrival &middot; delivery ETA</p>
-<h1>The leak looks 3.75 minutes better than the honest
-    model. The honest model is only 3.07 minutes
+<h1>The leak looks 0.92 minutes better than the honest
+    model. The honest model is only 2.83 minutes
     better than doing nothing.</h1>
-<p class="stamp">Generated 2026-10-09 14:12 UTC from
-   4,809 trips &middot;
+<p class="stamp">Generated 2026-10-09 14:49 UTC from
+   19,312 trips &middot;
    01 Sep to 12 Sep &middot; every figure computed at build time</p>
 
 <section>
@@ -80,46 +80,46 @@
   
       <div class="row">
         <div class="rh"><span class="nm">flat promise</span>
-          <span class="rt">11.509 min MAE</span></div>
+          <span class="rt">11.019 min MAE</span></div>
         <div class="track"><div class="fill" style="width:100.0%;
              background:var(--honest)"></div></div>
-        <div class="sub">p90 error 27.4 min &middot;
-             breach 72.2% &middot; 962 trips</div>
+        <div class="sub">p90 error 25.6 min &middot;
+             breach 71.9% &middot; 3,863 trips</div>
       </div>
 
       <div class="row">
         <div class="rh"><span class="nm">ridge, point-in-time</span>
-          <span class="rt">8.444 min MAE</span></div>
-        <div class="track"><div class="fill" style="width:73.4%;
+          <span class="rt">8.190 min MAE</span></div>
+        <div class="track"><div class="fill" style="width:74.3%;
              background:var(--honest)"></div></div>
-        <div class="sub">p90 error 16.6 min &middot;
-             breach 42.0% &middot; 962 trips</div>
+        <div class="sub">p90 error 16.4 min &middot;
+             breach 41.0% &middot; 3,863 trips</div>
       </div>
 
       <div class="row">
         <div class="rh"><span class="nm">ridge, leaky: in-flight window</span>
-          <span class="rt">4.698 min MAE</span></div>
-        <div class="track"><div class="fill" style="width:40.8%;
+          <span class="rt">7.265 min MAE</span></div>
+        <div class="track"><div class="fill" style="width:65.9%;
              background:var(--leak)"></div></div>
-        <div class="sub">p90 error 11.0 min &middot;
-             breach 49.8% &middot; 962 trips</div>
+        <div class="sub">p90 error 15.8 min &middot;
+             breach 46.4% &middot; 3,863 trips</div>
       </div>
 
       <div class="row">
         <div class="rh"><span class="nm">ridge, leaky: no window</span>
-          <span class="rt">8.251 min MAE</span></div>
-        <div class="track"><div class="fill" style="width:71.7%;
+          <span class="rt">8.103 min MAE</span></div>
+        <div class="track"><div class="fill" style="width:73.5%;
              background:var(--leak)"></div></div>
-        <div class="sub">p90 error 16.4 min &middot;
-             breach 43.3% &middot; 962 trips</div>
+        <div class="sub">p90 error 16.3 min &middot;
+             breach 42.2% &middot; 3,863 trips</div>
       </div>
   <p class="caveat"><b>The gap is the finding.</b> Filtering a feature window on
      when a trip was <i>assigned</i> rather than when it <i>finished</i> buys
-     3.75 minutes of MAE &mdash; more than the honest
+     0.92 minutes of MAE &mdash; more than the honest
      model's entire lift over the baseline &mdash; and none of it survives
      production, because at prediction time those trips had not finished and one
      of them is the trip being predicted. Dropping the window altogether gaps
-     only 0.19 minutes: small enough to dismiss
+     only 0.09 minutes: small enough to dismiss
      as noise, wrong for exactly the same reason, and the shape a GROUP BY
      written without a date filter actually takes.</p>
 </section>
@@ -131,10 +131,11 @@
      is what the accuracy dashboard showed.</p>
   <table>
     <thead><tr><th>Time</th><th class="n">Trips scored</th>
-      <th class="n">MAE</th><th class="n">Labels pending</th></tr></thead>
-    <tbody><tr><td>09:20</td><td class='n'>46</td><td class='n'>0.500</td><td class='n'>154</td></tr>
-<tr><td>09:40</td><td class='n'>66</td><td class='n'>3.636</td><td class='n'>134</td></tr>
-<tr><td>10:00</td><td class='n'>86</td><td class='n'>10.930</td><td class='n'>114</td></tr></tbody>
+      <th class="n">MAE &mdash; healthy</th><th class="n">MAE &mdash; broken</th>
+      <th class="n">&nbsp;</th><th class="n">Labels pending</th></tr></thead>
+    <tbody><tr><td>09:20</td><td class='n'>46</td><td class='n'>0.500</td><td class='n'>0.500</td><td class='n' style="color:var(--leak)">identical</td><td class='n'>154</td></tr>
+<tr><td>09:40</td><td class='n'>66</td><td class='n'>0.500</td><td class='n'>3.636</td><td class='n' style="color:var(--ink3)">diverged</td><td class='n'>134</td></tr>
+<tr><td>10:00</td><td class='n'>86</td><td class='n'>0.500</td><td class='n'>10.930</td><td class='n' style="color:var(--ink3)">diverged</td><td class='n'>114</td></tr></tbody>
   </table>
   <p class="caveat" style="margin-top:14px">Twenty minutes into the outage the
      dashboard reads the same MAE as a model that never broke, because every
