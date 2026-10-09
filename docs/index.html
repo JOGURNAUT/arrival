@@ -14,8 +14,9 @@
   }
   .figures b { color: var(--ink); font-variant-numeric: tabular-nums; font-weight: 600; }
 
-  .cards { display: grid; gap: var(--gap); grid-template-columns: 1fr 1fr; }
-  @media (max-width: 760px) { .cards { grid-template-columns: 1fr; } }
+  .cards { display: grid; gap: var(--gap); grid-template-columns: 1fr 1fr 1fr; }
+  @media (max-width: 920px) { .cards { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 560px) { .cards { grid-template-columns: 1fr; } }
 
   .card {
     display: block; text-decoration: none; color: inherit;
@@ -39,11 +40,6 @@
   }
   @media (max-width: 560px) { .stack li { grid-template-columns: 1fr; gap: 2px; } }
 
-  .sidelink {
-    display: inline-flex; align-items: center; gap: 6px;
-    font-size: 12.5px; color: var(--info); text-decoration: none;
-  }
-  .sidelink:hover { text-decoration: underline; }
 </style>
 </head>
 <body>
@@ -97,6 +93,12 @@
       <p>Every model's score, the outage that stays invisible for 35 minutes,
          and whether an A/B test could ever have seen a 2% improvement.</p>
     </a>
+    <a class="card" href="handoff.html">
+      <h2>Handoff</h2>
+      <p><b>Dispatch</b> measures how wrong a flat delivery promise is. Arrival
+         predicts what it should have been. <code>fct_trip</code> is the entire
+         contract between them &mdash; diagrammed.</p>
+    </a>
   </div>
 
   <section>
@@ -128,10 +130,6 @@
        than a measurement. What is not circular is the ordering: a leak
        flatters a model, the flattery does not survive serving, and an accuracy
        dashboard cannot see an outage until its labels arrive.</p>
-    <p style="margin: 14px 0 0">
-      <a class="sidelink" href="handoff.html">What Dispatch hands Arrival,
-         diagrammed &rarr;</a>
-    </p>
   </section>
 
 </div>
