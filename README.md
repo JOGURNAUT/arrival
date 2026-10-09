@@ -7,6 +7,8 @@ results page.
 
 **[Live results →](https://jogurnaut.github.io/arrival/)** — every figure
 computed when the page is built.
+**[Architecture →](https://jogurnaut.github.io/arrival/architecture.html)** ·
+**[What Dispatch hands Arrival →](https://jogurnaut.github.io/arrival/handoff.html)**
 
 ```
 The leak looks 3.75 minutes better than the honest model.

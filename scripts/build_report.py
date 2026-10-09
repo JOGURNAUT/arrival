@@ -278,6 +278,11 @@ def render(result, lag, lat, ab) -> str:
      declared once and retrieved two ways &mdash; point-in-time for training, by
      entity for serving &mdash; and a test replays a day asserting the two paths
      return identical values for every trip.</p>
+  <p class="lede" style="margin-top:-8px">
+     <a href="architecture.html" style="color:var(--honest)">Architecture
+     diagram &rarr;</a> &nbsp;&middot;&nbsp;
+     <a href="handoff.html" style="color:var(--honest)">What Dispatch hands
+     Arrival &rarr;</a></p>
   <p class="caveat">Trips are synthetic where Dispatch's warehouse is absent, so
      treat the absolute minutes as a demonstration. What is not circular is the
      ordering: a leak flatters a model, the flattery does not survive serving,
