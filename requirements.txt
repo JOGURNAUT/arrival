@@ -1,0 +1,10 @@
+# The whole project runs on these. No warehouse account, no API key, no GPU.
+pytest>=8.0
+
+# Serving.
+# fastapi>=0.110
+# uvicorn>=0.29
+
+# Dashboard.
+# streamlit>=1.40
+# pandas>=2.0
