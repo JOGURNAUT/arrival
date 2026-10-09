@@ -5,7 +5,7 @@ An ETA prediction service with a feature store, built on top of
 training → serving → monitoring → A/B**, with **107 tests** and a generated
 results page.
 
-**[Live results →](https://jogurnaut.github.io/arrival/)** — every figure
+**[Overview →](https://jogurnaut.github.io/arrival/)** · **[Live results →](https://jogurnaut.github.io/arrival/results.html)** — every figure
 computed when the page is built.
 **[Architecture →](https://jogurnaut.github.io/arrival/architecture.html)** ·
 **[What Dispatch hands Arrival →](https://jogurnaut.github.io/arrival/handoff.html)**
@@ -31,7 +31,7 @@ Nothing to sign up for. No GPU, no warehouse account, no API key.
 pip install -r requirements.txt
 
 python -m arrival.train          # train every model, print the comparison
-python scripts/build_report.py   # write docs/index.html
+python scripts/build_report.py   # write docs/results.html
 python -m pytest -q              # 107 tests
 
 streamlit run dashboard/app.py   # optional
@@ -218,7 +218,8 @@ arrival/
 tests/             107
 scripts/           build the report
 dashboard/         Streamlit
-docs/index.html    generated
+docs/index.html    the Overview page
+docs/results.html  generated
 ```
 
 ## Honest scope
