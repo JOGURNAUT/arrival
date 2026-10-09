@@ -5,20 +5,20 @@ An ETA prediction service with a feature store, built on top of
 training → serving → monitoring → A/B**, with **107 tests** and a generated
 results page.
 
-**[Overview →](https://jogurnaut.github.io/arrival/)** · **[Live results →](https://jogurnaut.github.io/arrival/results.html)** — every figure
+**[Overview →](https://jogurnaut.github.io/arrival/)** · **[Live results →](https://jogurnaut.github.io/arrival/results.html)**: every figure
 computed when the page is built.
 **[Architecture →](https://jogurnaut.github.io/arrival/architecture.html)** ·
 **[What Dispatch hands Arrival →](https://jogurnaut.github.io/arrival/handoff.html)**
 
 ```
 A leaked feature window buys 0.92 minutes of MAE that does not exist.
-The honest model is worth 2.83 — and on a quarter of the data,
+The honest model is worth 2.83, and on a quarter of the data,
 the same leak was worth 3.75 while the honest model was worth 3.07.
 ```
 
 That is the finding, and the second line is the important half. Filtering a
 feature window on when a trip was *assigned* rather than when it *finished*
-flatters a model — and it flatters it hardest when there is least history to
+flatters a model, and it flatters it hardest when there is least history to
 learn from, which is exactly when a model is being prototyped and exactly when
 nobody is checking. None of it survives production, and nothing in the training
 run says so.
@@ -66,7 +66,7 @@ instant, and a different number a minute later.
 
 Training asks for it as of when each historical trip was assigned. Serving asks
 for it as of now. If those two questions are answered by two pieces of code, they
-drift — and the model is scored offline on numbers it will never be served.
+drift, and the model is scored offline on numbers it will never be served.
 
 So every retrieval carries an `as_of`, both paths are driven by the same
 declarations, and a test replays a day asserting they agree:
@@ -81,7 +81,7 @@ finished trips pushed in as they complete. One trip agreeing is a coincidence.
 
 ## The leak, measured
 
-Trained on Dispatch's warehouse — 19,312 completed trips, 15,449 train, 3,863
+Trained on Dispatch's warehouse: 19,312 completed trips, 15,449 train, 3,863
 test, 60 drivers with a median of 320 trips each:
 
 ```
@@ -97,7 +97,7 @@ improvement that exists.
 
 **The in-flight leak looks 0.924 minutes better again.** Its window filters on
 `assigned_at`, so it reads trips that had not finished when the estimate was due
-— including the trip being predicted, whose own duration enters its own feature.
+including the trip being predicted, whose own duration enters its own feature.
 
 **The windowless variant gaps 0.086 minutes**: small enough to shrug at, wrong
 for exactly the same reason, and the shape a `GROUP BY` written without a date
@@ -106,7 +106,7 @@ the other kind looks like.
 
 ### The leak is largest when the history is thinnest
 
-The same comparison on a quarter of the data — 4,809 trips, about 80 per driver
+The same comparison on a quarter of the data: 4,809 trips, about 80 per driver
 rather than 320:
 
 ```
@@ -136,7 +136,7 @@ time     trips scored    MAE      labels pending
 ```
 
 Twenty minutes into the outage the dashboard reads **the same MAE as a model
-that never broke** — every trip it could score was predicted before 09:00.
+that never broke**: every trip it could score was predicted before 09:00.
 Accuracy is structurally behind by the label delay, and no amount of refreshing
 fixes it.
 
@@ -146,7 +146,7 @@ healthy model**, thirty-five minutes before accuracy registers anything.
 
 ## Could the experiment have seen it?
 
-A treatment that genuinely is 2% better — 0.16 minutes off an 8 minute MAE — run
+A treatment that genuinely is 2% better, 0.16 minutes off an 8 minute MAE, run
 across 800 drivers:
 
 ```
@@ -160,7 +160,7 @@ The measured difference is larger than the real one and smaller than what the
 experiment could resolve. Without the third number, the second goes into a deck
 as a win.
 
-Assignment hashes a stable entity id rather than being drawn per request —
+Assignment hashes a stable entity id rather than being drawn per request:
 per-request randomness puts the same driver in both arms across their shift,
 which does not add noise to the comparison so much as remove the comparison.
 
@@ -176,7 +176,7 @@ The mean would clear any alarm anyone would set while one request in twenty take
 two seconds. Latency is reported as percentiles, never a mean.
 
 A service asked about a driver it has never seen still answers, with the flat
-promise — and marks the answer `fallback`, because "the model said 23 minutes"
+promise, and marks the answer `fallback`, because "the model said 23 minutes"
 and "nobody could tell us anything" are the same number and completely different
 facts. The fallback rate is what separates *the model is live* from *the model
 has been failing open since Tuesday*.
@@ -187,18 +187,18 @@ has been failing open since Tuesday*.
 
 | | |
 |---|---|
-| `test_parity.py` | 11 — the offline and online paths return identical values, including a replayed day and out-of-order arrival |
-| `test_features.py` | 18 — windows, cold start, `LeakageError`, and a check against a deliberately quadratic reference implementation |
-| `test_training.py` | 19 — chronological split, the ridge solver, registry round-trips |
-| `test_serve.py` | 22 — percentiles, fallback flagging, health |
-| `test_monitor.py` | 16 — PSI, drift, and the blind window |
-| `test_experiment.py` | 21 — assignment stability, guardrails, MDE |
+| `test_parity.py` | 11: the offline and online paths return identical values, including a replayed day and out-of-order arrival |
+| `test_features.py` | 18: windows, cold start, `LeakageError`, and a check against a deliberately quadratic reference implementation |
+| `test_training.py` | 19: chronological split, the ridge solver, registry round-trips |
+| `test_serve.py` | 22: percentiles, fallback flagging, health |
+| `test_monitor.py` | 16: PSI, drift, and the blind window |
+| `test_experiment.py` | 21: assignment stability, guardrails, MDE |
 
 Two of them exist because they caught real bugs during the build:
 
 - **PSI binning used `bisect_right`**, so a feature that collapsed to a single
-  constant — a pipeline returning its default for every entity, the most total
-  drift there is — scored `0.0`, meaning *no drift*. The most broken case read as
+  constant, a pipeline returning its default for every entity, the most total
+  drift there is, scored `0.0`, meaning *no drift*. The most broken case read as
   the healthiest.
 - **Registry timestamps were second-precision**, so two models saved in the same
   second tied and `latest()` resolved by hash instead of by time.
@@ -230,5 +230,5 @@ the ordering: a leak flatters a model, the flattery does not survive serving, an
 an accuracy dashboard cannot see an outage until its labels arrive.
 
 The model is ridge regression in pure Python. Gradient boosting would score
-better and would teach nothing this project is about — the subject is the
+better and would teach nothing this project is about: the subject is the
 platform around the model, not the model.

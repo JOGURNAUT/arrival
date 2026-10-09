@@ -173,7 +173,7 @@ def render(result, lag, lat, ab) -> str:
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Arrival — Results</title>
+<title>Arrival: Results</title>
 <meta name="description" content="A leaked feature window buys MAE that does not exist, and the size of that flattery depends on how much history there is.">
 <link rel="stylesheet" href="site.css">
 </head>
@@ -209,8 +209,8 @@ def render(result, lag, lat, ab) -> str:
   <div class="bars">{bars}</div>
   <p class="caveat"><b>The gap is the finding.</b> Filtering a feature window on
      when a trip was <i>assigned</i> rather than when it <i>finished</i> buys
-     {result.leakage_gap_mae:.2f} minutes of MAE &mdash; more than the honest
-     model's entire lift over the baseline &mdash; and none of it survives
+     {result.leakage_gap_mae:.2f} minutes of MAE, more than the honest
+     model's entire lift over the baseline, and none of it survives
      production, because at prediction time those trips had not finished and one
      of them is the trip being predicted. Dropping the window altogether gaps
      only {result.lifetime_leakage_gap_mae:.2f} minutes: small enough to dismiss
@@ -227,8 +227,8 @@ def render(result, lag, lat, ab) -> str:
   <div class="tbox">
     <table data-sortable>
       <thead><tr><th data-sort>Time</th><th class="n" data-sort>Trips scored</th>
-        <th class="n" data-sort>MAE &mdash; healthy</th>
-        <th class="n" data-sort>MAE &mdash; broken</th>
+        <th class="n" data-sort>MAE (healthy)</th>
+        <th class="n" data-sort>MAE (broken)</th>
         <th data-sort>Visible?</th>
         <th class="n" data-sort>Labels pending</th></tr></thead>
       <tbody>{lagrows}</tbody>
@@ -237,8 +237,7 @@ def render(result, lag, lat, ab) -> str:
   <p class="caveat" style="margin-top:14px">Twenty minutes into the outage the
      dashboard reads the same MAE as a model that never broke, because every
      trip it could score was predicted before 09:00. Accuracy is structurally
-     behind by the label delay. <b>Prediction drift is not</b> &mdash;
-     predictions exist the moment they are served, and the broken model's
+     behind by the label delay. <b>Prediction drift is not.</b> Predictions exist the moment they are served, and the broken model's
      distribution has already moved while its accuracy has not.</p>
 </section>
 
@@ -260,8 +259,8 @@ def render(result, lag, lat, ab) -> str:
 
   <section>
     <h2>Could the experiment have seen it?</h2>
-    <p class="lede">A treatment that genuinely is 2% better &mdash;
-       {ab['true_effect']:.2f} min off an 8 min MAE &mdash; over
+    <p class="lede">A treatment that genuinely is 2% better,
+       {ab['true_effect']:.2f} min off an 8 min MAE, over
        {ab['n']:,} trips.</p>
     <div class="kpis">
       <div class="kpi"><div class="kv">{ab['true_effect']:.2f}</div><div class="kl">real effect, min</div></div>
@@ -281,8 +280,8 @@ def render(result, lag, lat, ab) -> str:
   <p class="lede">Trips come from <b>Dispatch</b>'s gold table, where
      <code>assigned_at</code> is the instant a prediction was due and
      <code>tat_minutes</code> only exists once the trip ends. Features are
-     declared once and retrieved two ways &mdash; point-in-time for training, by
-     entity for serving &mdash; and a test replays a day asserting the two paths
+     declared once and retrieved two ways: point-in-time for training, by
+     entity for serving, and a test replays a day asserting the two paths
      return identical values for every trip.</p>
   <p class="lede" style="margin-top:-8px">
      <a href="architecture.html">Architecture diagram &rarr;</a>

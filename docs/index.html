@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Arrival — ETA Prediction with a Point-in-Time Feature Store</title>
+<title>Arrival: ETA Prediction with a Point-in-Time Feature Store</title>
 <meta name="description" content="A feature store with one declaration and two retrieval paths, on top of Dispatch's trip telemetry. 107 tests, including one that replays a day and asserts the two paths never disagree.">
 <link rel="stylesheet" href="site.css">
 <style>
@@ -58,8 +58,8 @@
   <p class="eyebrow">Arrival</p>
   <h1>An ETA prediction service, built on a feature store that cannot drift.</h1>
   <p class="lede" style="font-size:13px">
-    One feature declaration, retrieved two ways &mdash; point-in-time for
-    training, by entity for serving &mdash; on top of
+    One feature declaration, retrieved two ways: point-in-time for
+    training, by entity for serving, on top of
     <a href="https://github.com/JOGURNAUT/dispatch">Dispatch</a>'s trip
     telemetry. A test replays a day and asserts the two paths never disagree.
   </p>
@@ -74,7 +74,7 @@
     <p class="eyebrow" style="margin-bottom:6px">The finding</p>
     <p style="margin:0 0 10px; font-size:14.5px; line-height:1.5">
       A leaked feature window buys <b>0.924 minutes</b> of MAE that does not
-      exist. The honest model is worth <b>2.830</b> &mdash; and on a quarter of
+      exist. The honest model is worth <b>2.830</b>. On a quarter of
       the data, the same leak was worth <b>3.746</b> while the honest model was
       worth only <b>3.065</b>. A leak flatters hardest exactly when a project is
       small, new, and least likely to be checked.
@@ -97,7 +97,7 @@
       <h2>Handoff</h2>
       <p><b>Dispatch</b> measures how wrong a flat delivery promise is. Arrival
          predicts what it should have been. <code>fct_trip</code> is the entire
-         contract between them &mdash; diagrammed.</p>
+         contract between them, diagrammed.</p>
     </a>
   </div>
 
