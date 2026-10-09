@@ -7,3 +7,5 @@ __pycache__/
 .ruff_cache/
 .archify/
 docs/*.finalize*.json
+docs/*.browser-check.json
+docs/*.delivery.json
